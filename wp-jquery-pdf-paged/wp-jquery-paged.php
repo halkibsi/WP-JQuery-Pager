@@ -8,32 +8,57 @@
 *   Version: 1.03
 *   License: GPLv3
 **/
-class WPJqueryPaged{
+
+if ( ! function_exists( 'add_action' ) )
+	wp_die( 'You are trying to access this file in a manner not allowed.', 'Direct Access Forbidden', array( 'response' => '403' ) );
+
+if ( ! defined( 'ICJPAGE_DIR' ) )
+	define( 'ICJPAGE_DIR', plugin_dir_path( __FILE__ ) );
+	
+if ( ! defined( 'ICJPAGE_URL' ) )
+	define( 'ICJPAGE_URL', plugin_dir_url( __FILE__ ) );
+
+
+add_action( 'plugins_loaded', array( 'WPJqueryPaged', 'init' ) );
+
+class WPJqueryPaged {
     
-    public function __construct(){
+    public function init() {
         add_shortcode( 'wp-jquery-paged', array( &$this, 'display' ) );
-        wp_enqueue_script( 'jq-easing', plugins_url('assets/jquery.easing.1.3.js', __FILE__), array( 'jquery' ) );
-        wp_enqueue_script( 'jq-booklet', plugins_url('assets/jquery.booklet.1.1.0.min.js', __FILE__), array( 'jquery' ) );
-        wp_enqueue_style( 'jq-booklet-styles', plugins_url('assets/booklet-styles.css', __FILE__) );
     }
     
-    public function display(){
-        global $post;
-        $imgs = self::get_gallery_page_imgs( $post->ID );
-        //fprint_r( $imgs );
-         ob_start();
-         require_once 'assets/views/output-view.php';
-         $output .= ob_get_contents();
-         ob_end_clean();
-         return $output;
+    public function display( $atts ) {
+        
+		extract( shortcode_atts( array(
+			'use_styles' => true
+		), $atts ) );
+		
+		self::load_assets( );
+        return self::output_pages( );
     }
+	
+	protected function output_pages( ) {
+		global $post;
+		$imgs = self::get_gallery_page_imgs( $post->ID );
+		ob_start();
+			require_once 'assets/views/output-view.php';
+		$output .= ob_get_contents( );
+		ob_end_clean( );
+		return $output;
+	}
+	
+	protected function load_assets( ) {
+		wp_enqueue_script( 'jq-easing', plugins_url('assets/jquery.easing.1.3.js', __FILE__), array( 'jquery' ) );
+		wp_enqueue_script( 'jq-booklet', plugins_url('assets/jquery.booklet.1.1.0.min.js', __FILE__), array( 'jquery' ) );
+		wp_enqueue_style( 'jq-booklet-styles', plugins_url('assets/booklet-styles.css', __FILE__) );
+	}
     
-    protected function get_gallery_page_imgs( $id ){
+    protected function get_gallery_page_imgs( $id ) {
         global $wpdb;
-        $sql = "SELECT * from ".$wpdb->posts." WHERE post_type='attachment' AND menu_order > 0 AND post_parent=$id AND post_mime_type LIKE 'image/%' ORDER BY menu_order ASC";
-        //echo $sql;
+        $sql = "SELECT * from ".$wpdb->posts."
+					WHERE post_type='attachment' AND menu_order > 0 AND post_parent=$id AND post_mime_type LIKE 'image/%'
+					ORDER BY menu_order ASC";
         return $wpdb->get_results( $sql );
    }
    
 }
-new WPJqueryPaged();
