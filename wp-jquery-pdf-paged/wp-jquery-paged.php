@@ -39,7 +39,12 @@ class WPJqueryPaged {
 	
 	protected function output_pages( ) {
 		global $post;
-		$imgs = self::get_gallery_page_imgs( $post->ID );
+		$args = wp_parse_args( $atts,
+			array(
+				'ids' => false					 
+			)
+		);
+		$imgs = self::get_gallery_page_imgs( $post->ID, $args['ids'] );
 		ob_start();
 			require_once 'assets/views/output-view.php';
 		$output .= ob_get_contents( );
@@ -53,11 +58,14 @@ class WPJqueryPaged {
 		wp_enqueue_style( 'jq-booklet-styles', plugins_url('assets/booklet-styles.css', __FILE__) );
 	}
     
-    protected function get_gallery_page_imgs( $id ) {
-        global $wpdb;
-        $sql = "SELECT * from ".$wpdb->posts."
-					WHERE post_type='attachment' AND menu_order > 0 AND post_parent=$id AND post_mime_type LIKE 'image/%'
-					ORDER BY menu_order ASC";
+    protected function get_gallery_page_imgs( $id, $given_ids ) {
+       global $wpdb;
+       if ( $given_ids ) :
+		$sql = "SELECT * from ".$wpdb->posts." WHERE post_type='attachment' AND ID IN ( $given_ids ) ORDER BY FIELD(ID, $given_ids)";
+	else :
+		$sql = "SELECT * from ".$wpdb->posts." WHERE post_type='attachment' AND menu_order > 0 AND post_parent=$id
+			AND post_mime_type LIKE 'image/%' ORDER BY menu_order ASC";
+        endif;				ORDER BY menu_order ASC";
         return $wpdb->get_results( $sql );
    }
    
