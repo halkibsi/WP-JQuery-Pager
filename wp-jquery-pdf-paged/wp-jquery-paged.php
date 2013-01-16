@@ -65,7 +65,7 @@ class WPJqueryPaged {
 	else :
 		$sql = "SELECT * from ".$wpdb->posts." WHERE post_type='attachment' AND menu_order > 0 AND post_parent=$id
 			AND post_mime_type LIKE 'image/%' ORDER BY menu_order ASC";
-        endif;				ORDER BY menu_order ASC";
+        endif;
         return $wpdb->get_results( $sql );
    }
    
