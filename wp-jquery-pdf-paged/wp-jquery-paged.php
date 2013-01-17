@@ -39,6 +39,7 @@ class WPJqueryPaged {
 	
 	protected function output_pages( ) {
 		global $post;
+		$output = '';
 		$imgs = self::get_gallery_page_imgs( $post->ID );
 		ob_start();
 			require_once 'assets/views/output-view.php';
