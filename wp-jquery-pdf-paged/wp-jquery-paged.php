@@ -18,33 +18,28 @@ if ( ! defined( 'ICJPAGE_DIR' ) )
 if ( ! defined( 'ICJPAGE_URL' ) )
 	define( 'ICJPAGE_URL', plugin_dir_url( __FILE__ ) );
 
-
-add_action( 'plugins_loaded', array( 'WPJqueryPaged', 'init' ) );
-
 class WPJqueryPaged {
     
-    public function init() {
+    protected $atts;
+
+    public function __construct() {
         add_shortcode( 'wp-jquery-paged', array( &$this, 'display' ) );
     }
     
     public function display( $atts ) {
         
-		extract( shortcode_atts( array(
-			'use_styles' => true
-		), $atts ) );
-		
-		self::load_assets( );
+		$this->atts = wp_parse_args( $atts, array(
+			'use_styles' => true,
+			'ids' => false
+		) );
+		if( true === $this->atts['use_styles'] ) 
+			self::load_assets( );
         return self::output_pages( );
     }
 	
 	protected function output_pages( ) {
 		global $post;
-		$args = wp_parse_args( $atts,
-			array(
-				'ids' => false					 
-			)
-		);
-		$imgs = self::get_gallery_page_imgs( $post->ID, $args['ids'] );
+		$imgs = self::get_gallery_page_imgs( $post->ID );
 		ob_start();
 			require_once 'assets/views/output-view.php';
 		$output .= ob_get_contents( );
@@ -58,15 +53,21 @@ class WPJqueryPaged {
 		wp_enqueue_style( 'jq-booklet-styles', plugins_url('assets/booklet-styles.css', __FILE__) );
 	}
     
-    protected function get_gallery_page_imgs( $id, $given_ids ) {
+    protected function get_gallery_page_imgs( $id ) {
        global $wpdb;
+       $given_ids = $this->atts['ids'];
        if ( $given_ids ) :
-		$sql = "SELECT * from ".$wpdb->posts." WHERE post_type='attachment' AND ID IN ( $given_ids ) ORDER BY FIELD(ID, $given_ids)";
-	else :
-		$sql = "SELECT * from ".$wpdb->posts." WHERE post_type='attachment' AND menu_order > 0 AND post_parent=$id
-			AND post_mime_type LIKE 'image/%' ORDER BY menu_order ASC";
+			$sql = "SELECT * from ".$wpdb->posts." WHERE post_type='attachment' AND ID IN ( $given_ids ) ORDER BY FIELD(ID, $given_ids)";
+		else :
+			$sql = "SELECT * from ".$wpdb->posts." WHERE post_type='attachment' AND menu_order > 0 AND post_parent=$id
+				AND post_mime_type LIKE 'image/%' ORDER BY menu_order ASC";
         endif;
         return $wpdb->get_results( $sql );
    }
    
 }
+
+function init_JqueryPaged(){
+	new WPJqueryPaged();
+}
+add_action( 'init', 'init_JqueryPaged' );
