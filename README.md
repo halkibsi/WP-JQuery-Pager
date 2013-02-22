@@ -1,7 +1,7 @@
 # WP jQuery Pager #
 **Contributors:** ivycat, dgilfoy, sewmyheadon  
 **Donate link:** http://www.ivycat.com/contribute/  
-**Tags:** pdf, img, pager, gallery, book, browser, magazine, booklet, page flipper  
+**Tags:** image, pager, gallery, book, browser, magazine, booklet, page flipper  
 **Requires at least:** 3.0  
 **Tested up to:** 3.5.1  
 **Stable tag:** trunk  
@@ -65,17 +65,6 @@ If you don't know your image IDs, we'll show you how to get them in WordPress 3.
 1. In this shortcode, change the word *gallery* to *wp-jquery-paged*.  Now your shortcode should look more like `[wp-jquery-paged ids="21,26,27"]`
 1. Save your post.
 1. View the post to make sure your booklet is loading as expected.
-
-## Screenshots ##
-
-###1. Here's the plugin in action.###
-![Here's the plugin in action.](http://s.wordpress.org/extend/plugins/wp-jquery-pager/screenshot-1.png)
-
-###2. Clicking the page or forward button will flip the page.###
-![Clicking the page or forward button will flip the page.](http://s.wordpress.org/extend/plugins/wp-jquery-pager/screenshot-2.png)
-
-###3. Finding your image ID in WordPress 3.5###
-![Finding your image ID in WordPress 3.5](http://s.wordpress.org/extend/plugins/wp-jquery-pager/screenshot-3.png)
 
 
 ## Frequently Asked Questions ##

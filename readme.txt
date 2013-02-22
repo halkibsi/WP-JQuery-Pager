@@ -1,7 +1,7 @@
 === WP jQuery Pager ===
 Contributors: ivycat, dgilfoy, sewmyheadon
 Donate link: http://www.ivycat.com/contribute/
-Tags: pdf, img, pager, gallery, book, browser, magazine, booklet, page flipper
+Tags: image, pager, gallery, book, browser, magazine, booklet, page flipper
 Requires at least: 3.0
 Tested up to: 3.5.1
 Stable tag: trunk
